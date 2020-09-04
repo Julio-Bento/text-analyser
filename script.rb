@@ -1,8 +1,3 @@
-#
-# TEXT ANALYZER
-# BY: Hayden Chudy
-# https://gist.github.com/hjc/4450428
-
 # basic setup for text analysis
 stopwords = %w{alors au aucuns aussi autre avant avec avoir bon car ce cela ces ceux chaque ci comme comment dans des du dedans dehors depuis devrait doit donc dos début elle elles en encore essai est et eu fait faites fois font hors ici il ils je juste la le les leur là ma  mais mes mien moins mon mot même
   ni nommés notre nous ou où par parce pas peut plupart pour pourquoi quand que quel quelle quelles quels qui sans ses seulement si sien son sont sous soyez sujet sur
