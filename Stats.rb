@@ -8,7 +8,7 @@
 require 'prettyprint'
 
 class Stats
-  attr_accessor :text, :tokens, :characters, :words,  :short_words, :short_words_percentage, :averageCharactersPerWord, :sentences, :averageWordsPerSentence, :paragraphs
+  attr_accessor :text, :tokens, :characters, :words, :short_words, :short_words_percentage, :average_characters_per_word, :sentences, :average_words_per_sentence, :paragraphs
 
   @@stopwords = File.readlines(ARGV[1]).join
 
@@ -19,22 +19,19 @@ class Stats
     @words = count_words
     @short_words = count_short_words
     @short_words_percentage = count_short_words_percentage
-    @averageCharactersPerWord = count_average_characters_per_word
+    @average_characters_per_word = count_average_characters_per_word
     @sentences = count_sentences
-    @averageWordsPerSentence = count_average_words_per_sentence
+    @average_words_per_sentence = count_average_words_per_sentence
     @paragraphs = count_paragraphs
   end
 
   # Transform the text into an array of string corresponding to words
   def tokenise
-    # Strip HTML tags
-    text = get_text_no_html
-
+    text = get_text_no_html # Strip HTML tags
     text.downcase!
-
     text = text.split
-    text.map! {|word| word.gsub(/[.,;:?!]/, '')}
-    @tokens = text.reject {|word| word.empty?}
+    text.map! {|word| word.gsub(/[.,\/#!$%\^&\*;:{}=_`~()?!]/, '')} # Strip special chars
+    @tokens = text.reject {|word| word.empty?} # Strip empty strings from array
 
     pp @tokens
 
@@ -150,9 +147,9 @@ puts "#{stats.characters} caractères"
 # puts "#{stats.count_chars_no_ws} caractères (sans espaces)"
 puts "#{stats.words} Mots"
 puts "#{stats.short_words} #{stats.short_words_percentage.round(0)}% Mots courts (< 5 caractères)"
-puts "#{stats.averageCharactersPerWord} Caractères/mot"
+puts "#{stats.average_characters_per_word} Caractères/mot"
 puts "#{stats.sentences} Phrases"
-puts "#{stats.averageWordsPerSentence.round(0)} Mots/phrase"
+puts "#{stats.average_words_per_sentence.round(0)} Mots/phrase"
 puts "#{stats.paragraphs} Paragraphes"
 
 puts ""

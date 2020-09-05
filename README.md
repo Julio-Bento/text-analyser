@@ -23,9 +23,9 @@ puts "#{stats.characters} caractères" # =>
 puts "#{stats.count_chars_no_ws} caractères (sans espaces)" # =>
 puts "#{stats.words} Mots" #=>
 puts "#{stats.short_words} #{stats.short_words_percentage}% Mots courts (< 5 caractères)" # =>
-puts "#{stats.averageCharactersPerWord} Caractères/mot" # =>
+puts "#{stats.average_characters_per_word} Caractères/mot" # =>
 puts "#{stats.sentences} Phrases" # =>
-puts "#{stats.averageWordsPerSentence} Mots/phrase" # =>
+puts "#{stats.average_words_per_sentence} Mots/phrase" # =>
 puts "#{stats.paragraphs} Paragraphes" # =>
 ```
 
