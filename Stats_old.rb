@@ -6,11 +6,13 @@
 # https://gist.github.com/hjc/4450428
 
 require 'prettyprint'
+require 'json'
 
 class Stats
   attr_accessor :text, :tokens, :characters, :words, :short_words, :short_words_percentage, :average_characters_per_word, :sentences, :average_words_per_sentence, :paragraphs
 
-  @@stopwords = File.readlines(ARGV[1]).join
+  @@stopwords = File.readlines("./stopwords/french").join
+
 
   def initialize(text)
     @text = text
@@ -33,7 +35,7 @@ class Stats
     text.map! {|word| word.gsub(/[.,\/#!$%\^&\*;:{}=_`~()?!]/, '')} # Strip special chars
     @tokens = text.reject {|word| word.empty?} # Strip empty strings from array
 
-    pp @tokens
+    # pp @tokens
 
     # @tokens = text.gsub(/[.,\/#!$%\^&\*;:{}=_`~()?!]/, ' ').split
   end
@@ -52,11 +54,6 @@ class Stats
     token_size = 0
     @tokens.map {|token| token_size += token.size}
     token_size
-  end
-
-  # Count characters in a string but without counting whitespaces
-  def count_chars_no_ws
-    @text.gsub(/\s+/, '').length
   end
 
   def count_words
@@ -83,7 +80,6 @@ class Stats
   end
 
   def count_sentences
-    get_text_no_html.split(/\.|\?|!/)
     get_text_no_html.split(/\.|\?|!/).length
   end
 
@@ -111,28 +107,21 @@ class Stats
     }.sort_by {|word, occurence| occurence}.reverse
   end
 
-
-  def count_occurences(numb_of_occurences: 10)
-    word_frequency = count_words_density
-
-    i = 1
-    word_frequency.each do |token, frequency|
-      break if i > numb_of_occurences
-
-      puts "#{token} - #{frequency} occurences"
-
-      i += 1
-    end
-
+  def display_stop_words
+    @@stopwords
   end
-
 end
+
+
 
 =begin
 TODO :
-- Il faut parvenir à détecter les utls comme étant un seul et unique mot !
+- Il faut parvenir à détecter les url comme étant un seul et unique mot !
+=> Cela marche plus ou moins mais on charcutte quelques caractères spéciaux en même temps...
 
 - Créer des classes Legibility et Visibility
+
+- prendre en compte les locales...
 
 =end
 
@@ -144,7 +133,6 @@ text = File.readlines(ARGV[0]).join
 stats = Stats.new(text)
 
 puts "#{stats.characters} caractères"
-# puts "#{stats.count_chars_no_ws} caractères (sans espaces)"
 puts "#{stats.words} Mots"
 puts "#{stats.short_words} #{stats.short_words_percentage.round(0)}% Mots courts (< 5 caractères)"
 puts "#{stats.average_characters_per_word} Caractères/mot"
@@ -162,13 +150,8 @@ stats.count_words_density.each do |word|
   i += 1
 end
 
-# stats.count_words_frequency.each do |word|
-#   break if i > 15
-#   puts "#{word[0]} - #{word[1]}"
-#   i += 1
-# end
-
-
 # pp stats.tokens
 
-# p stats.get_text_no_html
+# pp stats
+
+stats.display_stop_words
