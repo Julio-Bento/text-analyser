@@ -22,6 +22,7 @@ class StatsWorker
     stats.legibility.sentences = count_sentences
     stats.legibility.average_words_per_sentence = count_average_words_per_sentence
     stats.legibility.paragraphs = count_paragraphs
+    stats.legibility.average_sentences_per_paragraphs = count_avg_sentences_per_prgph
 
     # Fill in Visibility object
     words_freq = count_words_frequencies
@@ -85,7 +86,7 @@ class StatsWorker
   end
 
   def count_sentences
-    get_text_no_html.split(/.?!/).length
+    get_text_no_html.split(/[^\.!?]+[\.!?]/).length
   end
 
   def count_average_words_per_sentence
@@ -94,6 +95,10 @@ class StatsWorker
 
   def count_paragraphs
     @html.scan(/<p>/).size
+  end
+
+  def count_avg_sentences_per_prgph
+    (count_sentences.to_f / count_paragraphs).round(2)
   end
 
   def count_words_frequencies
@@ -118,6 +123,7 @@ puts "#{stats.legibility.average_characters_per_word} Caractères/mot"
 puts "#{stats.legibility.sentences} Phrases"
 puts "#{stats.legibility.average_words_per_sentence.round(0)} Mots/phrase"
 puts "#{stats.legibility.paragraphs} Paragraphes"
+puts "#{stats.legibility.average_sentences_per_paragraphs} Phrases/paragraphe"
 
 stats.visibility.word_frequencies.each do |word|
   puts "#{word.word} - #{word.occurences} occurences - #{word.occurences} %"

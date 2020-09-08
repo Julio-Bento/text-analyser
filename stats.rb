@@ -7,7 +7,8 @@ class Stats
   end
 
   class Legibility
-    attr_accessor :characters, :words, :short_words, :short_words_percentage, :average_characters_per_word, :sentences, :average_words_per_sentence, :paragraphs
+    attr_accessor :characters, :words, :short_words, :short_words_percentage, :average_characters_per_word,
+                  :sentences, :average_words_per_sentence, :paragraphs, :average_sentences_per_paragraphs
   end
 
   class Visibility
