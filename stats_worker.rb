@@ -24,8 +24,19 @@ class StatsWorker
     stats.legibility.paragraphs = count_paragraphs
 
     # Fill in Visibility object
-    # stats.visibility.word_frequencies = count_words_frequency
+    words_freq = count_words_frequencies
 
+    words_frequencies = stats.visibility.word_frequencies = []
+
+    10.times do |i|
+      word_frequency = WordFrequency.new
+
+      word_frequency.word = words_freq[i][0]
+      word_frequency.occurences = (words_freq[i][1] * count_words).to_int
+      word_frequency.percentage = (words_freq[i][1] * 100).round(0)
+
+      words_frequencies << word_frequency
+      end
 
     stats
   end
@@ -41,11 +52,8 @@ class StatsWorker
   end
 
   def get_text_no_html
-    # Strip HTML Tags
-    text_no_html = @html.gsub(/<\/?[^>]*>/, " ")
-
-    # Strip HTML encoded whitespaces
-    text_no_html.gsub(/&nbsp/, " ")
+    text_no_html = @html.gsub(/<\/?[^>]*>/, " ") # Strip HTML Tags
+    text_no_html.gsub(/&nbsp/, " ") # Strip HTML encoded whitespaces
   end
 
   def count_chars
@@ -77,7 +85,7 @@ class StatsWorker
   end
 
   def count_sentences
-    get_text_no_html.split(/\.|\?|!/).length
+    get_text_no_html.split(/.?!/).length
   end
 
   def count_average_words_per_sentence
@@ -88,15 +96,11 @@ class StatsWorker
     @html.scan(/<p>/).size
   end
 
-  def count_words_frequency
+  def count_words_frequencies
     tokens = @tokens
     tokens = tokens.select { |w| !@stop_words.include?(w)}
-
     word_frequency = tokens.each_with_object(Hash.new(0)) { |token, hash| hash[token] += 1 }.sort_by {|word, occurence| occurence}.reverse
-
-    word_density = word_frequency.each_with_object({}) { |(token, freq), hash|
-      hash[token] = (freq / count_words.to_f)
-    }.sort_by {|word, occurence| occurence}.reverse
+    word_frequency.each_with_object({}) { |(token, freq), hash| hash[token] = (freq / count_words.to_f) }.sort_by {|word, occurence| occurence}.reverse
   end
 
 end
@@ -114,3 +118,7 @@ puts "#{stats.legibility.average_characters_per_word} Caractères/mot"
 puts "#{stats.legibility.sentences} Phrases"
 puts "#{stats.legibility.average_words_per_sentence.round(0)} Mots/phrase"
 puts "#{stats.legibility.paragraphs} Paragraphes"
+
+stats.visibility.word_frequencies.each do |word|
+  puts "#{word.word} - #{word.occurences} occurences - #{word.occurences} %"
+end

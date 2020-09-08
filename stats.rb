@@ -12,9 +12,14 @@ class Stats
 
   class Visibility
     attr_accessor :word_frequencies
+
+    def initialize
+      @word_frequencies = Array
+    end
   end
 
-  class WordFrequency
-    attr_accessor :word, :occurences, :percentage
-  end
+end
+
+class WordFrequency
+  attr_accessor :word, :occurences, :percentage
 end
