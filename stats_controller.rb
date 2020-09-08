@@ -4,20 +4,31 @@ require_relative 'stats'
 class StatsController
   # Get html and local strings and return a Stat Object
   def get_stats(html, locale)
-    locale = locale.substring(0, 2)
-
-    # TODO: Test if local exists
-
     worker = StatsWorker.new(html, locale)
+    stats = worker.compute_stats
 
+    puts "#{stats.legibility.characters} caractères"
+    puts "#{stats.legibility.words} Mots"
+    puts "#{stats.legibility.short_words} #{stats.legibility.short_words_percentage.round(0)}% Mots courts (< 5 caractères)"
+    puts "#{stats.legibility.average_characters_per_word} Caractères/mot"
+    puts "#{stats.legibility.sentences} Phrases"
+    puts "#{stats.legibility.average_words_per_sentence.round(0)} Mots/phrase"
+    puts "#{stats.legibility.paragraphs} Paragraphes"
+    puts "#{stats.legibility.average_sentences_per_paragraphs} Phrases/paragraphe"
 
-    p @stats = worker.compute_stats
+    stats.visibility.word_frequencies.each do |word|
+      puts "#{word.word} - #{word.occurences} occurences - #{word.occurences} %"
+    end
   end
 end
 
-stats_controller = StatsController.new
+html = File.readlines("text.html").join
 
-html = File.readlines("./text.html").join
+statscontroller = StatsController.new
 
-stats_controller.get_stats(html, "fr")
+statscontroller.get_stats(html, "fr")
+
+
+
+
 

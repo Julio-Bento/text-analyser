@@ -1,4 +1,5 @@
 require_relative 'stats'
+require_relative 'stopwords'
 
 class StatsWorker
   attr_accessor :html, :tokens, :stop_words, :locale
@@ -6,7 +7,7 @@ class StatsWorker
   def initialize(html, locale)
     @html = html
     @locale = locale
-    @stop_words = File.readlines("./stopwords/french").join # TODO: Create a StopWords class returning the stop words of the choosen locale
+    @stop_words = StopWords.new(locale).stop_words
     @tokens = tokenise
   end
 
@@ -42,7 +43,7 @@ class StatsWorker
     stats
   end
 
-  # private
+  private
 
   def tokenise
     text = get_text_no_html # Strip HTML tags
@@ -108,23 +109,4 @@ class StatsWorker
     word_frequency.each_with_object({}) { |(token, freq), hash| hash[token] = (freq / count_words.to_f) }.sort_by {|word, occurence| occurence}.reverse
   end
 
-end
-
-html = File.readlines("text.html").join
-
-worker = StatsWorker.new(html, "fr")
-
-stats = worker.compute_stats
-
-puts "#{stats.legibility.characters} caractères"
-puts "#{stats.legibility.words} Mots"
-puts "#{stats.legibility.short_words} #{stats.legibility.short_words_percentage.round(0)}% Mots courts (< 5 caractères)"
-puts "#{stats.legibility.average_characters_per_word} Caractères/mot"
-puts "#{stats.legibility.sentences} Phrases"
-puts "#{stats.legibility.average_words_per_sentence.round(0)} Mots/phrase"
-puts "#{stats.legibility.paragraphs} Paragraphes"
-puts "#{stats.legibility.average_sentences_per_paragraphs} Phrases/paragraphe"
-
-stats.visibility.word_frequencies.each do |word|
-  puts "#{word.word} - #{word.occurences} occurences - #{word.occurences} %"
 end
